@@ -1,9 +1,11 @@
 DC = docker compose
-APP_CONTAINER = url-shortener
+APP_CONTAINER = app
 
 DB_SERVICE = postgres
 DB_NAME = url_shortener
 DB_USER = url_shortener_owner
+
+.PHONY: up down restart psql init-alembic makemigrations
 
 up:
 	$(DC) up -d --remove-orphans
@@ -17,3 +19,11 @@ restart:
 psql:
 	$(DC) exec $(DB_SERVICE) psql -d $(DB_NAME) -U $(DB_USER)
 
+init-alembic:
+	$(DC) exec $(APP_CONTAINER) alembic init -t async migrations
+
+makemigrations:
+	$(DC) exec $(APP_CONTAINER) alembic revision --autogenerate -m "$(m)"
+
+migrate:
+	$(DC) exec $(APP_CONTAINER) alembic upgrade head

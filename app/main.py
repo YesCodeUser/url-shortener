@@ -5,6 +5,7 @@ app = FastAPI(title="URL Shortener")
 
 app.include_router(api_router)
 
+
 @app.get("/")
 async def root():
     return {"message": "Api is working"}
