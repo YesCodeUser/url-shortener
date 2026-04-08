@@ -27,9 +27,8 @@
 ---
 
 ### 1. Подготовка окружения
-Склонируйте репозиторий по ssh или по https:
+Склонируйте репозиторий:
 ```bash
-git clone git@github.com:YesCodeUser/url-shortener.git
 git clone https://github.com/YesCodeUser/url-shortener.git
 ```
 В корне проекта создайте виртуальное окружение. Для windows:
