@@ -1,6 +1,7 @@
 import pytest
 import uuid
 
+from sqlalchemy import select
 from app.models.link import Link
 from app.services.utils import generate_short_id
 
@@ -12,6 +13,21 @@ async def test_create_short_success(client, db_session):
 
     assert response.status_code == 201
     assert "short_id" in response.json()
+
+
+@pytest.mark.asyncio
+async def test_create_duplicate_url(client, db_session):
+    data = {"original_url": f"https://example.com/{uuid.uuid4()}"}
+
+    response1 = await client.post("/shorten", json=data)
+    response2 = await client.post("/shorten", json=data)
+
+    query = select(Link).where(Link.original_url == data['original_url'])
+    result_links = await db_session.execute(query)
+    links = result_links.scalars().all()
+
+    assert response1.json() == response2.json()
+    assert len(links) == 1
 
 
 @pytest.mark.asyncio

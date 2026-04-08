@@ -13,6 +13,13 @@ router = APIRouter()
 
 @router.post("/shorten", response_model=LinkResponse, status_code=201)
 async def shorten_url(payload: LinkRequest, db: AsyncSession = Depends(get_db)):
+    query_exist = select(Link).where(Link.original_url == str(payload.original_url))
+    result_exist = await db.execute(query_exist)
+    existing_link = result_exist.scalar_one_or_none()
+
+    if existing_link:
+        return existing_link
+
     while True:
         short_id = generate_short_id()
 

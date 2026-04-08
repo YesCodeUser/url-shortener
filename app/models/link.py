@@ -8,7 +8,7 @@ class Link(Base):
     __tablename__ = "links"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    original_url: Mapped[str] = mapped_column(Text, nullable=False)
+    original_url: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
     short_id: Mapped[str] = mapped_column(
         String(10), index=True, unique=True, nullable=False
     )
