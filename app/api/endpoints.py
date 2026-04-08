@@ -50,8 +50,10 @@ async def redirect_to_url(short_id: str, db: AsyncSession = Depends(get_db)):
     if not link:
         raise HTTPException(status_code=404)
 
-    text_query = text("UPDATE links SET visit_counts = visit_counts + 1 WHERE short_id = :s_id")
-    await db.execute(text_query, {'s_id': short_id})
+    text_query = text(
+        "UPDATE links SET visit_counts = visit_counts + 1 WHERE short_id = :s_id"
+    )
+    await db.execute(text_query, {"s_id": short_id})
     await db.commit()
 
     return RedirectResponse(url=link.original_url)

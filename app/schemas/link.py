@@ -10,6 +10,7 @@ class LinkResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class AmountVisitsResponse(BaseModel):
     visit_counts: int
 

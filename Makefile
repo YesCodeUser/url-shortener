@@ -30,3 +30,6 @@ makemigrations:
 
 migrate:
 	$(DC) exec $(APP_CONTAINER) alembic upgrade head
+
+test:
+	$(DC) exec $(APP_CONTAINER) pytest -v
