@@ -5,7 +5,10 @@ DB_SERVICE = postgres
 DB_NAME = url_shortener
 DB_USER = url_shortener_owner
 
-.PHONY: up down restart psql init-alembic makemigrations
+.PHONY: build up down restart psql init-alembic makemigrations
+
+build:
+	$(DC) build
 
 up:
 	$(DC) up -d --remove-orphans
