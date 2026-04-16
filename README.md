@@ -1,107 +1,107 @@
-# 🔗 URL Shortener Microservice
+# 🔗 Asynchronous URL Shortener Microservice
 
-Высокопроизводительный асинхронный микросервис для сокращения ссылок, построенный на современном стеке: **FastAPI** + **SQLAlchemy 2.0** + **PostgreSQL**.
-
----
-
-## ✨ Ключевые особенности и решения
-
-*   **Асинхронность:** Полностью асинхронный стек (FastAPI, SQLAlchemy, asyncpg) для обеспечения высокой пропускной способности.
-*   **Атомарные счетчики:** Для исключения проблем **Race Condition** при обновлении статистики переходов используется SQL-запрос `UPDATE ... SET visit_counts = visit_counts + 1`, что гарантирует точность данных под нагрузкой.
-*   **Надежная генерация ID:** Использование библиотеки `shortuuid` с автоматической проверкой на коллизии в базе данных.
-*   **Контейнеризация:** Проект полностью готов к деплою и тестированию через Docker и Docker Compose.
-*   **Makefile:** Настроен `Makefile` для быстрого выполнения рутинных команд.
+A high-performance microservice designed to shorten URLs, built with a modern Python stack: **FastAPI**, **SQLAlchemy 2.0**, and **PostgreSQL**.
 
 ---
 
-## 🛠 Технологический стек
+## ✨ Key Features & Technical Solutions
 
-*   **Python 3.12+**
-*   **FastAPI**
-*   **PostgreSQL 15**
-*   **SQLAlchemy 2.0** 
-*   **Alembic** 
-*   **Pytest** 
-*   **Docker / Docker Compose / Makefile**
+*   **Fully Asynchronous:** Built on top of `FastAPI`, `SQLAlchemy` (async mode), and `asyncpg` to ensure high throughput and non-blocking I/O operations.
+*   **Atomic Counters:** To prevent **Race Condition** issues during analytics updates, the service utilizes a raw SQL query (`UPDATE links SET visit_counts = visit_counts + 1 ...`). This ensures 100% data accuracy under heavy concurrent load.
+*   **Collision-Resistant ID Generation:** Uses the `shortuuid` library with an integrated database check to guarantee unique identifiers for every link.
+*   **Dockerized Environment:** Fully containerized with Docker and Docker Compose for seamless deployment and consistent testing.
+*   **Makefile Automation:** Includes a comprehensive `Makefile` to streamline routine development tasks.
 
 ---
 
-## 🚀 Быстрый запуск (Docker)
+## 🛠 Tech Stack
 
-Это рекомендуемый способ для проверки работоспособности сервиса.
-
-1.  **Клонируйте репозиторий:**
-    ```bash
-    git clone https://github.com/YesCodeUser/url-shortener.git
-    cd url-shortener
-    ```
-
-2.  **Подготовьте окружение:**
-    Создайте в корне проекта файл `.env.docker` и заполните его:
-    ```env
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=postgres
-    POSTGRES_HOST=postgres
-    POSTGRES_PORT=5432
-    POSTGRES_DB=url_shortener
-    ```
-
-3.  **Запустите сервис:**
-    ```bash
-    make up
-    ```
-
-4.  **Примените миграции:**
-    ```bash
-    make migrate
-    ```
-
-*Сервис будет доступен по адресу:* **http://localhost:8000**  
-*Интерактивная документация (Swagger):* **http://localhost:8000/docs**
+*   **Language:** Python 3.12+
+*   **Framework:** FastAPI
+*   **Database:** PostgreSQL 15
+*   **ORM:** SQLAlchemy 2.0 (Async)
+*   **Migrations:** Alembic
+*   **Testing:** Pytest
+*   **Infrastructure:** Docker / Docker Compose / Makefile
 
 ---
 
-## 🧪 Тестирование и Линтинг
+## 🚀 Quick Start (Docker)
 
-Все проверки запускаются внутри контейнера через `Makefile`:
+This is the recommended way to evaluate the service.
 
-*   **Запуск тестов:** 
+### 1. Clone the Repository
+```bash
+git clone https://github.com/YesCodeUser/url-shortener.git
+cd url-shortener
+```
+
+### 2.  **Create a .env.docker file in the root directory and add the following configuration:**
+```bash
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=url_shortener
+```
+
+### 3.  **Launch the Service:**
+```bash
+make up
+```
+
+### 4.  **Apply Migrations:**
+```bash
+make migrate
+```
+
+*API URL:* **http://localhost:8000**  
+*Interactive Documentation (Swagger):* **http://localhost:8000/docs**
+
+---
+
+## 🧪 Testing & Linting
+
+All checks are executed inside the container via the `Makefile`:
+
+*   **Run Automated Tests:** 
     ```bash
     make test
     ```
-    *(Реализована транзакционная изоляция: каждый тест откатывает изменения в БД автоматически)*.
+    *Note: The test suite implements transactional isolation. Each test executes within its own transaction and automatically rolls back changes to ensure a clean database state.*
+    
 
-*   **Линтинг и форматирование (локально):**
-    ```bash
-    black .
-    ruff check .
-    ```
+*    **Local Formatting & Linting:**
+```bash
+black .
+ruff check .
+   ```
 
 ---
 
-## 🛠 Локальная настройка (для разработки)
+## 🛠 Local Development Setup
 
-Этот шаг нужен для корректной работы автодополнения в IDE и локального запуска инструментов линтинга.
+Required for IDE autocomplete and local linting tools.
 
-1.  **Создайте и активируйте venv:**
+1.  **Create and Activate venv:**
     ```bash
     python -m venv .venv
-    source .venv/bin/activate  # Для Linux/macOS
-    .venv\Scripts\activate     # Для Windows
+    source .venv/bin/activate  # Linux/macOS
+    .venv\Scripts\activate     # Windows
     ```
-2.  **Установите зависимости:**
+2.  **Install Dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
 
 ---
 
-## 🛰 API Эндпоинты
+## 🛰 API Endpoints
 
-| Метод | Эндпоинт | Описание |
+| Method | Endpoint | Description |
 |-------|----------|----------|
-| **POST** | `/shorten` | Принимает длинный URL, возвращает `short_id`. |
-| **GET** | `/{short_id}` | Редирект (307) на оригинальный URL + инкремент счетчика. |
-| **GET** | `/stats/{short_id}` | Получение текущего количества переходов. |
+| **POST** | `/shorten` | Accepts a long URL and returns a unique `short_id`. |
+| **GET** | `/{short_id}` | Redirects (307) to the original URL and increments the visit counter. |
+| **GET** | `/stats/{short_id}` | Retrieves the current statistics for a specific ID. |
 
 
